@@ -119,15 +119,15 @@ export default function TopNavBar() {
             <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70" />
           </div>
 
-          <button onClick={() => scrollToSection('streams')} className="text-left text-[#00E5A0] font-semibold">
+          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-[#00E5A0] font-semibold hover:text-primary-fixed transition-colors">
             Streams
-          </button>
-          <button onClick={() => scrollToSection('schedule')} className="text-left text-white/70 hover:text-white transition-colors">
+          </Link>
+          <Link href="/schedule" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-white/70 hover:text-white transition-colors">
             Schedule
-          </button>
-          <button onClick={() => scrollToSection('discover')} className="text-left text-white/70 hover:text-white transition-colors">
+          </Link>
+          <Link href="/discover" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-white/70 hover:text-white transition-colors">
             Discover
-          </button>
+          </Link>
           <button className="w-full bg-[#00E5A0] text-black font-semibold py-2 px-4 rounded-[6px] active:scale-95 text-sm">
             Create Event
           </button>
