@@ -11,6 +11,25 @@ interface EventModalProps {
 export default function EventModal({ event, onClose }: EventModalProps) {
   if (!event) return null;
 
+  const handleShare = async () => {
+    const sharePayload = {
+      title: event.title,
+      text: `Check out ${event.title} on VickyBytes`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(sharePayload);
+        return;
+      } catch {
+        // Fall back to clipboard below.
+      }
+    }
+
+    await navigator.clipboard.writeText(`${sharePayload.title} — ${sharePayload.url}`);
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={onClose}>
       <div
@@ -34,6 +53,7 @@ export default function EventModal({ event, onClose }: EventModalProps) {
             src={event.image}
             alt={event.imageAlt}
             fill
+            sizes="(max-width: 768px) 100vw, 800px"
             className="w-full h-full object-cover"
           />
           {event.isLive && (
@@ -77,11 +97,11 @@ export default function EventModal({ event, onClose }: EventModalProps) {
           <div className="flex gap-4 pt-4 border-t border-outline-variant/10">
             <button
               onClick={onClose}
-              className="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold py-3 rounded-xl hover:shadow-[0_0_20px_rgba(105,246,184,0.3)] transition-all active:scale-95"
+              className="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold py-3 rounded-lg hover:shadow-[0_0_20px_rgba(105,246,184,0.3)] transition-all active:scale-95"
             >
               {event.isLive ? 'Join Now' : 'Notify Me'}
             </button>
-            <button className="flex-1 glass border border-outline-variant/20 text-on-surface font-bold py-3 rounded-xl hover:bg-surface-container-highest transition-all active:scale-95">
+            <button onClick={handleShare} className="flex-1 glass border border-outline-variant/20 text-on-surface font-bold py-3 rounded-lg hover:bg-surface-container-highest transition-all active:scale-95">
               Share Event
             </button>
           </div>
@@ -90,4 +110,3 @@ export default function EventModal({ event, onClose }: EventModalProps) {
     </div>
   );
 }
-

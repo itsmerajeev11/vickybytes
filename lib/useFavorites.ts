@@ -1,5 +1,6 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Event } from '@/types';
 
 const FAVORITES_KEY = 'vickybytes_favorites';
 
@@ -8,9 +9,16 @@ export function useFavorites() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(FAVORITES_KEY);
-    if (stored) {
-      setFavorites(new Set(JSON.parse(stored)));
+    try {
+      const stored = localStorage.getItem(FAVORITES_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setFavorites(new Set(parsed));
+        }
+      }
+    } catch {
+      localStorage.removeItem(FAVORITES_KEY);
     }
     setIsLoaded(true);
   }, []);

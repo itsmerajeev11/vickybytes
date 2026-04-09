@@ -4,43 +4,70 @@ import Image from 'next/image';
 
 export default function HeroSection() {
   return (
-    <section className="relative h-[614px] flex items-center px-8 lg:px-20 overflow-hidden">
+    <section className="relative h-[680px] flex items-center overflow-hidden">
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=1400"
-          alt="Cinematic wide shot of a live music concert with dramatic stage lighting"
+          alt="Concert"
           fill
           priority
-          className="w-full h-full object-cover"
+          sizes="100vw"
+          className="w-full h-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent"></div>
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent"></div>
       </div>
 
-      <div className="relative z-10 max-w-3xl">
-        <span className="inline-block bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.05em] uppercase mb-4">
-          The Future of Streaming
-        </span>
+      {/* Content — uses identical container to TopNavBar */}
+      <div className="relative z-10 w-full">
+        <div className="w-full px-8 lg:px-10 pt-8">
+          <div className="max-w-2xl">
 
-        <h1 className="text-5xl md:text-7xl font-bold tracking-[-0.04em] text-on-surface leading-[0.95] mb-6 drop-shadow-lg">
-          Experience Live Like Never Before
-        </h1>
+            <span className="inline-block bg-[#0A1F13] text-primary border border-primary/20 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.08em] uppercase mb-6">
+              The Future of Streaming
+            </span>
 
-        <p className="text-on-surface-variant text-lg max-w-xl mb-8 leading-relaxed">
-          Discover premium high-fidelity streams from the world's most talented creators. Join the Obsidian circle today.
-        </p>
+            <h1 className="text-6xl md:text-[5rem] font-black tracking-[-0.04em] text-white leading-[0.92] mb-6">
+              Experience Live Like <br /> Never Before
+            </h1>
 
-        <div className="flex gap-4 flex-wrap">
-          <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold py-3 px-8 rounded-xl hover:shadow-[0_0_20px_rgba(105,246,184,0.3)] transition-all active:scale-95 text-sm md:text-base">
-            Browse Live Now
-          </button>
+            <p className="text-on-surface-variant text-lg font-medium max-w-lg mb-10 leading-relaxed">
+              Discover premium high-fidelity streams from the world's most talented creators. Join the Obsidian circle today.
+            </p>
 
-          <button className="glass border border-outline-variant/20 text-on-surface font-bold py-3 px-8 rounded-xl hover:bg-surface-container-highest transition-all active:scale-95 text-sm md:text-base">
-            Learn More
-          </button>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => {
+                  const element = document.getElementById('discover');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                    // Optional: if we want to also trigger the live filter, 
+                    // we'd need to sync with the Home component's state or URL.
+                    window.history.pushState({}, '', '/?filter=live');
+                  }
+                }}
+                className="bg-primary text-black font-bold py-3.5 px-8 rounded-lg hover:opacity-90 transition-opacity active:scale-95"
+              >
+                Browse Live Now
+              </button>
+              <button 
+                onClick={() => {
+                  const element = document.getElementById('schedule');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="border border-white/20 bg-white/5 text-white font-bold py-3.5 px-8 rounded-lg hover:bg-white/10 transition-colors active:scale-95"
+              >
+                Learn More
+              </button>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
   );
 }
-

@@ -1,40 +1,43 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useSearch } from '@/context/SearchContext';
+import { Search, ChevronDown, User, Settings, CreditCard, LogOut } from 'lucide-react';
 
-interface TopNavBarProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-}
-
-export default function TopNavBar({ searchQuery, onSearchChange }: TopNavBarProps) {
+export default function TopNavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { searchQuery, setSearchQuery } = useSearch();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const NAV_LINKS = [
+    { label: 'Streams', href: '/' },
+    { label: 'Schedule', href: '/schedule' },
+    { label: 'Discover', href: '/discover' },
+  ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-[#131314] flex justify-between items-center px-8 h-16 border-b border-outline-variant/10">
+    <nav className="fixed top-0 w-full z-50 bg-[#131314]/95 backdrop-blur-sm flex items-center h-16 border-b border-white/5">
+      <div className="flex justify-between items-center w-full px-8">
       <div className="flex items-center gap-8">
         <span className="text-xl font-bold tracking-tighter text-white">VickyBytes</span>
-        <div className="hidden md:flex gap-6 items-center font-body tracking-[-0.04em] font-medium">
-          <Link
-            href="#"
-            className="text-primary border-b-2 border-primary pb-1 hover:text-white transition-colors duration-200"
-          >
-            Streams
-          </Link>
-          <Link
-            href="#"
-            className="text-on-surface-variant hover:text-white transition-colors duration-200"
-          >
-            Schedule
-          </Link>
-          <Link
-            href="#"
-            className="text-on-surface-variant hover:text-white transition-colors duration-200"
-          >
-            Discover
-          </Link>
+        <div className="hidden md:flex gap-6 items-center font-['Inter'] tracking-[-0.04em] font-medium">
+          {NAV_LINKS.map(link => (
+            <Link key={link.label} href={link.href}
+              className={`transition-colors duration-200 ${
+                pathname === link.href
+                  ? 'text-primary border-b-2 border-primary pb-1'
+                  : 'text-on-surface-variant hover:text-white'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -44,52 +47,93 @@ export default function TopNavBar({ searchQuery, onSearchChange }: TopNavBarProp
             type="text"
             placeholder="Search events..."
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-surface-container-high text-on-surface border-none rounded-xl px-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary focus:outline-none transition-all"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-[#1C1C1E] text-on-surface border-none rounded-xl px-5 h-12 text-base w-96 focus:ring-1 focus:ring-primary focus:outline-none transition-all"
           />
-          <span className="material-symbols-outlined absolute right-3 top-1.5 text-on-surface-variant text-lg pointer-events-none">
-            search
-          </span>
+          <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant" />
         </div>
 
-        <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-semibold py-2 px-4 rounded-xl active:scale-95 duration-100 text-sm hover:shadow-[0_0_20px_rgba(105,246,184,0.2)] transition-all">
+        <Link href="/create-event" className="bg-primary text-black font-bold h-12 px-12 rounded-xl hover:bg-primary-fixed-dim transition-colors duration-200 active:scale-95 text-base whitespace-nowrap flex items-center">
           Create Event
-        </button>
+        </Link>
 
-        <div className="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/20 hover:border-primary/30 transition-colors">
-          <Image
-            alt="User Profile"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDpR374wXG0HwqyyuEMR_2UhiJ9kYXWSH0QA190wPsM3pFNmHJX4kwdJcSFzhIG38bc_1oRGrlI0e6m1_qOK_flQkIgQORis0zWk1xHkruSwjWll35E_iIGK75tDHmYpcmHTwqimighDy7ZjF_o3z-4v3j2VIx-OY1GrrOINBPma44A9UKFrOXMhD_Cu_C2NjkRaVnGsRnzd_9Ql7ATJ6gBNfaBqqrKp4GmB7rSnK81GUpYab_x5vmW2P_3-mBpy31EMbw-ONTjrY"
-            width={32}
-            height={32}
-            className="w-full h-full object-cover"
-          />
+        <div className="relative">
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20 hover:ring-2 hover:ring-primary/30 transition-all flex items-center justify-center bg-surface-container-high"
+          >
+            <Image
+              alt="User Profile"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100&h=100"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Reliable fallback if Unsplash fails
+                (e.target as any).src = 'https://ui-avatars.com/api/?name=RS&background=201f21&color=00E5A0';
+              }}
+            />
+          </button>
+
+          {/* Profile Dropdown */}
+          {isProfileOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)} />
+              <div className="absolute right-0 mt-3 w-56 bg-[#1a191b] border border-white/5 rounded-2xl shadow-2xl z-50 py-2 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="px-4 py-3 border-b border-white/5">
+                  <p className="text-sm font-bold text-white">Rajeev S.</p>
+                  <p className="text-xs text-on-surface-variant">rajeev@vickybytes.com</p>
+                </div>
+                <div className="py-2">
+                  <Link href="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors">
+                    <User size={16} /> My Profile
+                  </Link>
+                  <Link href="/profile?tab=settings" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors">
+                    <Settings size={16} /> Settings
+                  </Link>
+                  <Link href="/profile?tab=billing" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors">
+                    <CreditCard size={16} /> Subscription
+                  </Link>
+                </div>
+                <div className="pt-2 border-t border-white/5">
+                  <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-400/5 transition-colors">
+                    <LogOut size={16} /> Sign Out
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-
-        <button
-          className="md:hidden text-on-surface hover:text-primary transition-colors"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          <span className="material-symbols-outlined text-2xl">
-            {isMobileMenuOpen ? 'close' : 'menu'}
-          </span>
-        </button>
       </div>
 
       {isMobileMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-surface-container-low border-b border-outline-variant/10 md:hidden p-4 flex flex-col gap-4">
-          <Link href="#" className="text-primary">
+        <div className="absolute top-16 left-0 right-0 bg-[#0a0a0a] border-b border-white/10 md:hidden p-4 flex flex-col gap-4 shadow-xl">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-white/[0.07] text-white border border-white/[0.15] rounded-[8px] px-4 pr-10 py-2 text-sm w-full focus:ring-1 focus:ring-[#00E5A0] focus:outline-none"
+            />
+            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70" />
+          </div>
+
+          <button onClick={() => scrollToSection('streams')} className="text-left text-[#00E5A0] font-semibold">
             Streams
-          </Link>
-          <Link href="#" className="text-on-surface-variant">
+          </button>
+          <button onClick={() => scrollToSection('schedule')} className="text-left text-white/70 hover:text-white transition-colors">
             Schedule
-          </Link>
-          <Link href="#" className="text-on-surface-variant">
+          </button>
+          <button onClick={() => scrollToSection('discover')} className="text-left text-white/70 hover:text-white transition-colors">
             Discover
-          </Link>
+          </button>
+          <button className="w-full bg-[#00E5A0] text-black font-semibold py-2 px-4 rounded-[6px] active:scale-95 text-sm">
+            Create Event
+          </button>
         </div>
       )}
+      </div>
     </nav>
   );
 }
-
