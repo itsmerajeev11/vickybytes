@@ -12,7 +12,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-import MainLayout from "@/components/layout/MainLayout";
+import MainLayout from "../components/layout/MainLayout";
 
 export default function RootLayout({
   children,

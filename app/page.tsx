@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import HomeContent from '@/components/layout/HomeContent';
+import HomeContent from '../components/layout/HomeContent';
 
 export default function Home() {
   return (
