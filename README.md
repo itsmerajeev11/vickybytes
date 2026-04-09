@@ -4,7 +4,7 @@ A premium live event streaming platform UI built for the Frontend Engineering As
 
 ## 🚀 Live Demo
 
-**🔗 [View Live on Vercel](https://streamingvickybytes-git-main-rajeevs-projects-7c21a07c.vercel.app)**
+**🔗 [View Live on Render](https://vickybytes.onrender.com)**
 
 ---
 
@@ -128,7 +128,20 @@ npm start
 
 ## 🌐 Deployment
 
-Deployed on **Vercel** (recommended):
+**Currently deployed on Render**: https://vickybytes.onrender.com
+
+### Deploy on Render
+
+1. Push your repository to GitHub
+2. Go to [Render Dashboard](https://dashboard.render.com)
+3. Create a new **Web Service**
+4. Connect your GitHub repository
+5. Configure:
+   - **Build Command**: `npm install; npm run build`
+   - **Start Command**: `npm start`
+6. Click **Deploy**
+
+### Deploy on Vercel (Alternative)
 
 ```bash
 npm install -g vercel
